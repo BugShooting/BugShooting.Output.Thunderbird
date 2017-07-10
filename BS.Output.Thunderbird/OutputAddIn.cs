@@ -93,7 +93,7 @@ namespace BS.Output.Thunderbird
                         Convert.ToBoolean(OutputValues["EditFileName", false.ToString()].Value));
     }
 
-    protected async override Task<V3.SendResult> Send(Output Output, V3.ImageData ImageData)
+    protected async override Task<V3.SendResult> Send(IWin32Window Owner, Output Output, V3.ImageData ImageData)
     {
       try
       {
@@ -105,6 +105,9 @@ namespace BS.Output.Thunderbird
 
           Send send = new Send(fileName);
 
+          var ownerHelper = new System.Windows.Interop.WindowInteropHelper(send);
+          ownerHelper.Owner = Owner.Handle;
+       
           if (send.ShowDialog() != true)
           {
             return new V3.SendResult(V3.Result.Canceled);
