@@ -35,6 +35,13 @@
       </Button>
       <ComboBox x:Name="FileFormatList" Grid.Column="1" Width="60" HorizontalAlignment="Right" SelectedValuePath="Tag" />
     </Grid>
+    <Grid Margin="4">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <CheckBox x:Name="EditFileNameCheckBox" Grid.Column="1" Content="Edit file name before sending" />
+    </Grid>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0" >
       <Button Width="80" Height="24" Content="OK" Margin="4" Click="OK_Click" />
       <Button Width="80" Height="24" Content="Cancel" Margin="4" Click="Cancel_Click" />

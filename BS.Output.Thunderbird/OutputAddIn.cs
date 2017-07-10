@@ -28,7 +28,7 @@ namespace BS.Output.Thunderbird
 
     protected override bool Editable
     {
-      get { return false; }
+      get { return true; }
     }
 
     protected override string Description
@@ -41,7 +41,8 @@ namespace BS.Output.Thunderbird
 
       Output output = new Output(Name,
                                  "Screenshot",
-                                 String.Empty);
+                                 String.Empty,
+                                 false);
 
       return EditOutput(Owner, output);
 
@@ -60,7 +61,8 @@ namespace BS.Output.Thunderbird
 
         return new Output(edit.OutputName,
                           edit.FileName,
-                          edit.FileFormat);
+                          edit.FileFormat,
+                          edit.EditFileName);
       }
       else
       {
@@ -77,6 +79,7 @@ namespace BS.Output.Thunderbird
       outputValues.Add(new OutputValue("Name", Output.Name));
       outputValues.Add(new OutputValue("FileName", Output.FileName));
       outputValues.Add(new OutputValue("FileFormat", Output.FileFormat));
+      outputValues.Add(new OutputValue("EditFileName", Output.EditFileName.ToString()));
 
       return outputValues;
 
@@ -86,7 +89,8 @@ namespace BS.Output.Thunderbird
     {
       return new Output(OutputValues["Name", this.Name].Value,
                         OutputValues["FileName", "Screenshot"].Value,
-                        OutputValues["FileFormat", ""].Value);
+                        OutputValues["FileFormat", ""].Value,
+                        Convert.ToBoolean(OutputValues["EditFileName", false.ToString()].Value));
     }
 
     protected async override Task<V3.SendResult> Send(Output Output, V3.ImageData ImageData)
@@ -94,11 +98,25 @@ namespace BS.Output.Thunderbird
       try
       {
 
-        string fileFormat = Output.FileFormat;
-        string fileName = V3.FileHelper.GetFileName(Output.FileName, fileFormat, ImageData); ;
-        string filePath = Path.Combine(Path.GetTempPath(), fileName + "." + V3.FileHelper.GetFileExtention(fileFormat));
+        string fileName = V3.FileHelper.GetFileName(Output.FileName, Output.FileFormat, ImageData);
 
-        Byte[] fileBytes = V3.FileHelper.GetFileBytes(fileFormat, ImageData);
+        if (Output.EditFileName)
+        {
+
+          Send send = new Send(fileName);
+
+          if (send.ShowDialog() != true)
+          {
+            return new V3.SendResult(V3.Result.Canceled);
+          }
+
+          fileName = send.FileName;
+
+        }
+
+        string filePath = Path.Combine(Path.GetTempPath(), fileName + "." + V3.FileHelper.GetFileExtention(Output.FileFormat));
+
+        Byte[] fileBytes = V3.FileHelper.GetFileBytes(Output.FileFormat, ImageData);
 
         using (FileStream file = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
         {

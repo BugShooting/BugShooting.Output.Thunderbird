@@ -38,6 +38,7 @@ namespace BS.Output.Thunderbird
       {
         FileFormatList.SelectedIndex = 0;
       }
+      EditFileNameCheckBox.IsChecked = output.EditFileName;
       
     }
 
@@ -54,6 +55,11 @@ namespace BS.Output.Thunderbird
     public string FileFormat
     {
       get { return FileFormatList.SelectedValue.ToString(); }
+    }
+
+    public bool EditFileName
+    {
+      get { return EditFileNameCheckBox.IsChecked.Value; }
     }
 
     private void FileNameReplacement_Click(object sender, RoutedEventArgs e)

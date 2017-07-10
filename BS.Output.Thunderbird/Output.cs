@@ -7,14 +7,17 @@
     string name;
     string fileName;
     string fileFormat;
+    bool editFileName;
 
     public Output(string name,
                   string fileName,
-                  string fileFormat)
+                  string fileFormat,
+                  bool editFileName)
     {
       this.name = name;
       this.fileName = fileName;
       this.fileFormat = fileFormat;
+      this.editFileName = editFileName;
     }
 
     public string Name
@@ -35,6 +38,11 @@
     public string FileFormat
     {
       get { return fileFormat; }
+    }
+
+    public bool EditFileName
+    {
+      get { return editFileName; }
     }
 
   }
