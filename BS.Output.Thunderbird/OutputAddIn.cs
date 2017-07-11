@@ -98,6 +98,31 @@ namespace BS.Output.Thunderbird
       try
       {
 
+        string applicationPath = string.Empty;
+
+        using (RegistryKey localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+        {
+          using (RegistryKey key = localMachineKey.OpenSubKey("Software\\Mozilla\\Mozilla Thunderbird", false))
+          {
+            if (key != null)
+            {
+              string currentVersion = Convert.ToString(key.GetValue("CurrentVersion", string.Empty));
+
+              using (RegistryKey pathKey = localMachineKey.OpenSubKey("Software\\Mozilla\\Mozilla Thunderbird\\" + currentVersion + "\\Main", false))
+              {
+                if (pathKey != null)
+                  applicationPath = Convert.ToString(pathKey.GetValue("PathToExe", string.Empty));
+              }
+            }
+          }
+        }
+
+        if (!File.Exists(applicationPath))
+        {
+          return new V3.SendResult(V3.Result.Failed, "Thunderbird is not installed.");
+        }
+
+
         string fileName = V3.FileHelper.GetFileName(Output.FileName, Output.FileFormat, ImageData);
 
         if (Output.EditFileName)
@@ -125,30 +150,6 @@ namespace BS.Output.Thunderbird
         {
           file.Write(fileBytes, 0, fileBytes.Length);
           file.Close();
-        }
-
-        string applicationPath = string.Empty;
-
-        using (RegistryKey localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-        {
-          using (RegistryKey key = localMachineKey.OpenSubKey("Software\\Mozilla\\Mozilla Thunderbird", false))
-          {
-            if (key != null)
-            {
-              string currentVersion = Convert.ToString(key.GetValue("CurrentVersion", string.Empty));
-
-              using (RegistryKey pathKey = localMachineKey.OpenSubKey("Software\\Mozilla\\Mozilla Thunderbird\\" + currentVersion + "\\Main", false))
-              {
-                if (pathKey != null) 
-                   applicationPath = Convert.ToString(pathKey.GetValue("PathToExe", string.Empty)); 
-              }
-            }
-          }
-        }
-
-        if (!File.Exists(applicationPath))
-        {
-          return new V3.SendResult(V3.Result.Failed, "Thunderbird is not installed.");
         }
         
         Process.Start(applicationPath, "-compose \"attachment='" + filePath + "'\"");
