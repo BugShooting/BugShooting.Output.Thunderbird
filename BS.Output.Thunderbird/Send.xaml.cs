@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System;
+using System.Windows;
 
 namespace BS.Output.Thunderbird
 {
@@ -11,6 +11,10 @@ namespace BS.Output.Thunderbird
       InitializeComponent();
 
       FileNameTextBox.Text = fileName;
+
+      FileNameTextBox.TextChanged += ValidateData;
+      ValidateData(null, null);
+      
       FileNameTextBox.SelectAll();
       FileNameTextBox.Focus();
 
@@ -18,36 +22,17 @@ namespace BS.Output.Thunderbird
 
     public string FileName
     {
-      get
-      {
-        return FileNameTextBox.Text;
-      }
+      get { return FileNameTextBox.Text; }
+    }
+
+    private void ValidateData(object sender, EventArgs e)
+    {
+      OK.IsEnabled = Validation.IsValid(FileNameTextBox);
     }
 
     private void OK_Click(object sender, RoutedEventArgs e)
     {
       this.DialogResult = true;
-    }
-
-    private void Cancel_Click(object sender, RoutedEventArgs e)
-    {
-      this.DialogResult = false;
-    }
-
-    protected override void OnPreviewKeyDown(KeyEventArgs e)
-    {
-      base.OnPreviewKeyDown(e);
-
-      switch (e.Key)
-      {
-        case Key.Enter:
-          OK_Click(this, e);
-          break;
-        case Key.Escape:
-          Cancel_Click(this, e);
-          break;
-      }
-
     }
     
   }
