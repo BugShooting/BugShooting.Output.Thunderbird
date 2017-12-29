@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace BS.Output.Thunderbird
+namespace BugShooting.Output.Thunderbird
 {
   partial class Send : Window
   {

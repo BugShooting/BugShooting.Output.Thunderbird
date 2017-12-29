@@ -1,4 +1,6 @@
-﻿namespace BS.Output.Thunderbird
+﻿using BS.Plugin.V3.Output;
+
+namespace BugShooting.Output.Thunderbird
 {
 
   public class Output: IOutput 
