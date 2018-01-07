@@ -145,7 +145,7 @@ namespace BugShooting.Output.Thunderbird
 
         }
 
-        string filePath = Path.Combine(Path.GetTempPath(), fileName + "." + FileHelper.GetFileExtention(Output.FileFormat));
+        string filePath = Path.Combine(Path.GetTempPath(), fileName + "." + FileHelper.GetFileExtension(Output.FileFormat));
 
         Byte[] fileBytes = FileHelper.GetFileBytes(Output.FileFormat, ImageData);
 
